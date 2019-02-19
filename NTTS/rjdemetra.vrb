@@ -1,0 +1,18 @@
+\frametitle{Example of the dashboard (1/2)}
+\protect\hypertarget{example-of-the-dashboard-12}{}
+
+\footnotesize
+
+\begin{verbatim}
+##
+## Attaching package: 'rjdqa'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked _by_ '.GlobalEnv':
+##
+##     myseries
+\end{verbatim}
+
+\includegraphics{img/markdown-unnamed-chunk-19-1.pdf}
+
