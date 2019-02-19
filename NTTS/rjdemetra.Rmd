@@ -67,7 +67,7 @@ knitr::opts_chunk$set(echo = TRUE,
 - Manipulate workspace (only TRAMO-SEATS and X-13-ARIMA):  
     + Import JD+ workspace to get: input raw series or SA model
     + Export R models created via RJDemetra
-    
+
 
 # Some examples
 ## RegARIMA examples
@@ -83,7 +83,7 @@ str(regarima_model, max.level = 1)
 
 ### RegARIMA examples (2/4)
 
-\animategraphics[loop, autoplay, width=\linewidth]{4}{img/gif/regarima_print/img_}{1}{37}
+\animategraphics[loop, autoplay, width=\linewidth]{2}{img/gif/regarima_print/}{1}{10}
 
 ### RegARIMA examples (3/4)
 
@@ -208,7 +208,7 @@ get_ts(wk)
 
 ### Import a workspace (2/3)
 
-\animategraphics[loop, autoplay, width=\linewidth]{7}{img/gif/import_model/}{1}{97}
+\animategraphics[loop, autoplay, width=\linewidth]{4}{img/gif/import_model/}{1}{97}
 
 ### Import a workspace (3/3)
 \footnotesize
