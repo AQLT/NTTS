@@ -1,18 +1,28 @@
-\frametitle{Example of the dashboard (1/2)}
-\protect\hypertarget{example-of-the-dashboard-12}{}
+\frametitle{How to install the package?}
+\protect\hypertarget{how-to-install-the-package}{}
 
-\footnotesize
+The package is available on GitHub:
+\url{https://github.com/jdemetra/rjdemetra}
 
-\begin{verbatim}
-##
-## Attaching package: 'rjdqa'
-\end{verbatim}
+It has also it's own website:
+\url{https://jdemetra.github.io/rjdemetra/}
 
-\begin{verbatim}
-## The following object is masked _by_ '.GlobalEnv':
-##
-##     myseries
-\end{verbatim}
+It package can be installed from CRAN:
 
-\includegraphics{img/markdown-unnamed-chunk-19-1.pdf}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"RJDemetra"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Or from github (development version):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"jdemetra/rjdemetra"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\bcinfo To install it you need Java8: in case you don't, install a
+portable version of Java8 and set the \texttt{JAVA\_HOME} path.
 

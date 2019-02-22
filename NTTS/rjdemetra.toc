@@ -1,10 +1,10 @@
 \babel@toc {english}{}
-\beamer@sectionintoc {1}{RJDemetra}{2}{0}{1}
-\beamer@subsectionintoc {1}{1}{Purpose and current status}{3}{0}{1}
-\beamer@sectionintoc {2}{Some examples}{5}{0}{2}
-\beamer@subsectionintoc {2}{1}{RegARIMA examples}{6}{0}{2}
-\beamer@subsectionintoc {2}{2}{Seasonal adjustment examples}{10}{0}{2}
-\beamer@subsectionintoc {2}{3}{Manipulate workspaces}{17}{0}{2}
-\beamer@subsectionintoc {2}{4}{Installation and future development}{21}{0}{2}
-\beamer@subsectionintoc {2}{5}{Future developments}{22}{0}{2}
-\beamer@subsectionintoc {2}{6}{Statistics Canada dashboard}{25}{0}{2}
+\beamer@sectionintoc {1}{Introduction to seasonal adjustment}{2}{0}{1}
+\beamer@sectionintoc {2}{RJDemetra}{9}{0}{2}
+\beamer@subsectionintoc {2}{1}{Current status}{10}{0}{2}
+\beamer@subsectionintoc {2}{2}{Some examples}{11}{0}{2}
+\beamer@subsectionintoc {2}{3}{Seasonal adjustment examples}{14}{0}{2}
+\beamer@subsectionintoc {2}{4}{Manipulate workspaces}{22}{0}{2}
+\beamer@subsectionintoc {2}{5}{Installation and future development}{26}{0}{2}
+\beamer@subsectionintoc {2}{6}{Future developments}{27}{0}{2}
+\beamer@sectionintoc {3}{How to use JDemetra+ to improve production of SA series?}{29}{0}{3}

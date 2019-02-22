@@ -127,10 +127,10 @@
     <item name="fixedcoefficients">
         <subset>
             <item name="LS (2008-10-01)">
-                <double>36000.0</double>
+                <double>36.0</double>
             </item>
             <item name="AO (2002-01-01)">
-                <double>14000.0</double>
+                <double>14.0</double>
             </item>
         </subset>
     </item>

@@ -126,6 +126,7 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{wrapfig}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -141,6 +142,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{animate}
+\usepackage{fontawesome5}
 
 \title{RJDemetra: an R interface to JDemetra+}
 \ateneo{NTTS, 13 March 2019}
@@ -171,56 +173,102 @@ Central Bank (AM)}
 \titlepage
 \end{frame}
 
-\hypertarget{rjdemetra}{%
-\section{RJDemetra}\label{rjdemetra}}
+\hypertarget{introduction-to-seasonal-adjustment}{%
+\section{Introduction to seasonal
+adjustment}\label{introduction-to-seasonal-adjustment}}
 
-\hypertarget{purpose-and-current-status}{%
-\subsection{Purpose and current
-status}\label{purpose-and-current-status}}
+\begin{frame}{Introduction to seasonal adjustment}
+\protect\hypertarget{introduction-to-seasonal-adjustment-1}{}
 
-\begin{frame}{Purpose of the RJDemetra package}
-\protect\hypertarget{purpose-of-the-rjdemetra-package}{}
+\begin{figure}
+\centering
+\includegraphics{img/markdown-unnamed-chunk-1-1.pdf}
+\caption{Industrial production index in France}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Introduction to seasonal adjustment (2/3)}
+\protect\hypertarget{introduction-to-seasonal-adjustment-23}{}
+
+Purpose of seasonal adjustment:
 
 \begin{itemize}
 \tightlist
 \item
-  Complete R package for Tramo-Seats and X13\\
+  Time comparison (outlook, short-term evolution\ldots{})\\
 \item
-  Users: ``pure R'' package
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Part of R routines, automatization
-
-    \begin{itemize}
-    \tightlist
-    \item
-      Batch processing
-    \item
-      E.g.: direct vs indirect aggregates adjustment, dashboards
-    \end{itemize}
-  \item
-    Usage of other R functions and packages
-  \end{itemize}
-\item
-  JD+ functionality
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Modeling and seasonal adjustment
-  \item
-    Full specification
-  \end{itemize}
-\item
-  Advanced graphical presentation: JD+
+  Spatial comparison
 \end{itemize}
+
+\bigskip
+\pause
+
+Two leading methods:
+
+\begin{itemize}
+\tightlist
+\item
+  TRAMO/SEATS+ (Bank of Spain)\\
+\item
+  X-12ARIMA/X-13ARIMA-SEATS (US-Census Bureau).
+\end{itemize}
+
+\bigskip
+\pause
+
+\(\rightarrow\) proceed in two steps
 
 \end{frame}
 
+\begin{frame}{Introduction to seasonal adjustment (3/3)}
+\protect\hypertarget{introduction-to-seasonal-adjustment-33}{}
+
+\vspace{-0.15cm}
+
+\begin{enumerate}
+\item
+  Pre-adjusting the series of deterministics effects with a RegARIMA
+  model
+\item
+  Decomposition: to extract seasonal component
+\end{enumerate}
+
+\centering
+
+\includegraphics[height=0.75\textheight]{img/sa_2_steps.png}
+
+\end{frame}
+
+\begin{frame}{What's JDemetra+ ?}
+\protect\hypertarget{whats-jdemetra}{}
+
+\includegraphics[width=2cm]{img/jdemetra+.jpg} TRAMO/SEATS+ and
+X-13ARIMA-SEATS are implemented in JDemetra+
+
+\bigskip
+
+\large\faThumbsUp{} \normalsize Software
+\href{https://ec.europa.eu/eurostat/cros/system/files/Jdemetra_\%20release.pdf}{officially
+recommended} by Eurostat and the ECB for seasonal and calendar
+adjustment of official statistics
+
+\bigskip
+
+\(\rightarrow\) RJDemetra is an \large\faRProject{}
+\normalsize interface to JDemetra+ based on the \large\faJava{}
+\normalsize libraries of JD+
+
+\end{frame}
+
+\hypertarget{rjdemetra}{%
+\section{RJDemetra}\label{rjdemetra}}
+
+\hypertarget{current-status}{%
+\subsection{Current status}\label{current-status}}
+
 \begin{frame}{Current status}
-\protect\hypertarget{current-status}{}
+\protect\hypertarget{current-status-1}{}
 
 \begin{itemize}
 \tightlist
@@ -230,15 +278,12 @@ status}\label{purpose-and-current-status}}
   \begin{itemize}
   \tightlist
   \item
-    R package with documentation\\
+    pre-defined and user-defined specifications\\
   \item
     S3 classes with plot, summary, print methods
-  \item
-    Possibility to add user-defined regressors but not user-defined
-    calendar regressors
   \end{itemize}
 \item
-  Manipulate workspace (only TRAMO-SEATS and X-13-ARIMA):
+  Manipulate JD+ workspaces:
 
   \begin{itemize}
   \tightlist
@@ -247,79 +292,104 @@ status}\label{purpose-and-current-status}}
   \item
     Export R models created via RJDemetra
   \end{itemize}
+\item
+  Include a dataset: industrial production indices in manufacturing in
+  the European Union
 \end{itemize}
 
 \end{frame}
 
 \hypertarget{some-examples}{%
-\section{Some examples}\label{some-examples}}
+\subsection{Some examples}\label{some-examples}}
 
-\hypertarget{regarima-examples}{%
-\subsection{RegARIMA examples}\label{regarima-examples}}
-
-\begin{frame}[fragile]{RegARIMA examples (1/4)}
-\protect\hypertarget{regarima-examples-14}{}
+\begin{frame}[fragile]{RegARIMA examples (1/3)}
+\protect\hypertarget{regarima-examples-13}{}
 
 \footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(RJDemetra);}\KeywordTok{options}\NormalTok{(}\DataTypeTok{enable_print_style =} \OtherTok{FALSE}\NormalTok{)}
-\NormalTok{myseries <-}\StringTok{ }\NormalTok{ipi_c_eu[,}\StringTok{"FR"}\NormalTok{]}
-\NormalTok{regarima_model <-}\StringTok{ }\KeywordTok{regarima_def_x13}\NormalTok{(myseries, }\DataTypeTok{spec =} \StringTok{"RG4c"}\NormalTok{)}
-\KeywordTok{str}\NormalTok{(regarima_model, }\DataTypeTok{max.level =} \DecValTok{1}\NormalTok{)}
+\KeywordTok{library}\NormalTok{(RJDemetra)}
+\NormalTok{ipi_fr <-}\StringTok{ }\NormalTok{ipi_c_eu[,}\StringTok{"FR"}\NormalTok{]}
+\NormalTok{regarima_model <-}\StringTok{ }\KeywordTok{regarima_def_x13}\NormalTok{(ipi_fr, }\DataTypeTok{spec =} \StringTok{"RG4c"}\NormalTok{)}
+\NormalTok{regarima_model}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## List of 9
-##  $ specification          :List of 7
-##  $ arma                   : Named num [1:6] 2 1 1 0 1 1
-##   ..- attr(*, "names")= chr [1:6] "p" "d" "q" "bp" ...
-##  $ arima.coefficients     : num [1:4, 1:3] 0.336 0.206 -0.245 -0.511 0.171 ...
-##   ..- attr(*, "dimnames")=List of 2
-##  $ regression.coefficients: num [1:4, 1:3] -1.133 -8 -7.551 -5.069 0.337 ...
-##   ..- attr(*, "dimnames")=List of 2
-##  $ loglik                 : num [1:7, 1] -631 9 323 1280 1281 ...
-##   ..- attr(*, "dimnames")=List of 2
-##  $ model                  :List of 2
-##  $ residuals              : Time-Series [1:323] from 1991 to 2018: -2.601 0.573 -1.776 -1.374 2.155 ...
-##  $ residuals.stat         :List of 2
-##  $ forecast               : Time-Series [1:24, 1:2] from 2018 to 2020: 102 103 114 109 103 ...
-##   ..- attr(*, "dimnames")=List of 2
-##  - attr(*, "class")= chr [1:2] "regarima" "X13"
+## y = regression model + arima (2, 1, 1, 0, 1, 1)
+## Log-transformation: no
+## Coefficients:
+##           Estimate Std. Error
+## Phi(1)      0.3358      0.171
+## Phi(2)      0.2060      0.096
+## Theta(1)   -0.2450      0.173
+## BTheta(1)  -0.5112      0.050
+## 
+##              Estimate Std. Error
+## Easter [1]     -1.133      0.337
+## LS (11-2008)   -8.000      1.283
+## LS (1-2009)    -7.551      1.283
+## LS (5-2008)    -5.069      1.234
+## 
+## 
+## Residual standard error: 1.696 on 323 degrees of freedom
+## Log likelihood =  -631, aic =  1280 aicc =  1281, bic(corrected for length) =   1.2
 \end{verbatim}
 
 \end{frame}
 
-\begin{frame}{RegARIMA examples (2/4)}
-\protect\hypertarget{regarima-examples-24}{}
-
-\animategraphics[loop, autoplay, width=\linewidth]{2}{img/gif/regarima_print/}{1}{10}
-
-\end{frame}
-
-\begin{frame}[fragile]{RegARIMA examples (3/4)}
-\protect\hypertarget{regarima-examples-34}{}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{layout}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{6}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{));}\KeywordTok{plot}\NormalTok{(regarima_model, }\DataTypeTok{ask =} \OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{img/markdown-unnamed-chunk-3-1.pdf}
-
-\end{frame}
-
-\begin{frame}[fragile]{RegARIMA examples (3/4): extra plot}
-\protect\hypertarget{regarima-examples-34-extra-plot}{}
+\begin{frame}[fragile]{RegARIMA examples (2/3)}
+\protect\hypertarget{regarima-examples-23}{}
 
 \footnotesize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{plot}\NormalTok{(regarima_model, }\DataTypeTok{which =} \DecValTok{7}\NormalTok{, }\DataTypeTok{dec_zoom =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{summary}\NormalTok{(regarima_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## y = regression model + arima (2, 1, 1, 0, 1, 1)
+## 
+## Model: RegARIMA - X13
+## Estimation span: from 1-1990 to 12-2017
+## Log-transformation: no
+## Regression model: no mean, no trading days effect, no leap year effect, Easter effect, outliers(3)
+## 
+## Coefficients:
+## ARIMA: 
+##           Estimate Std. Error  T-stat Pr(>|t|)    
+## Phi(1)     0.33579    0.17106   1.963   0.0505 .  
+## Phi(2)     0.20600    0.09643   2.136   0.0334 *  
+## Theta(1)  -0.24498    0.17272  -1.418   0.1571    
+## BTheta(1) -0.51123    0.05004 -10.216   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Regression model: 
+##              Estimate Std. Error T-stat Pr(>|t|)    
+## Easter [1]    -1.1332     0.3373 -3.359 0.000875 ***
+## LS (11-2008)  -7.9997     1.2831 -6.235 1.42e-09 ***
+## LS (1-2009)   -7.5508     1.2833 -5.884 1.00e-08 ***
+## LS (5-2008)   -5.0692     1.2341 -4.108 5.07e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## 
+## Residual standard error: 1.696 on 9 degrees of freedom
+## Log likelihood =  -631, aic =  1280, aicc =  1281, bic(corrected for length) =   1.2
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{RegARIMA examples (3/3)}
+\protect\hypertarget{regarima-examples-33}{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{layout}\NormalTok{(}\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{6}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{2}\NormalTok{));}\KeywordTok{plot}\NormalTok{(regarima_model, }\DataTypeTok{ask =} \OtherTok{FALSE}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -336,40 +406,37 @@ examples}\label{seasonal-adjustment-examples}}
 
 A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
-\begin{enumerate}
-\tightlist
-\item
-  \texttt{regarima}: the RegArima model
-\item
-  \texttt{decomposition}: decomposition variables (\(\ne\) for
-  TRAMO-SEATS and X-13-ARIMA)
-\item
-  \texttt{final}: time series main results
-\item
-  \texttt{diagnostics}: residuals tests, etc.
-\item
-  \texttt{user\_defined}: other user\_defined variables not exported by
-  default (see \texttt{?user\_defined\_variables})
-\end{enumerate}
-
-\footnotesize
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{x13_usr_spec <-}\StringTok{ }\KeywordTok{x13_spec_def}\NormalTok{(}\DataTypeTok{spec=}\KeywordTok{c}\NormalTok{(}\StringTok{"RSA5c"}\NormalTok{),}\DataTypeTok{usrdef.outliersEnabled =} \OtherTok{TRUE}\NormalTok{,}
-                             \DataTypeTok{usrdef.outliersType =} \KeywordTok{c}\NormalTok{(}\StringTok{"LS"}\NormalTok{,}\StringTok{"AO"}\NormalTok{),}
-                             \DataTypeTok{usrdef.outliersDate=}\KeywordTok{c}\NormalTok{(}\StringTok{"2008-10-01"}\NormalTok{,}\StringTok{"2002-01-01"}\NormalTok{),}
-                             \DataTypeTok{usrdef.outliersCoef =} \KeywordTok{c}\NormalTok{(}\DecValTok{36000}\NormalTok{,}\DecValTok{14000}\NormalTok{),}
-                             \DataTypeTok{transform.function =} \StringTok{"None"}\NormalTok{)}
-\NormalTok{x13_mod <-}\StringTok{ }\KeywordTok{x13}\NormalTok{(myseries, x13_usr_spec)}
-\NormalTok{ts_mod <-}\StringTok{ }\KeywordTok{tramoseats_def}\NormalTok{(myseries, }\DataTypeTok{spec =} \StringTok{"RSAfull"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics{img/sa_obj_struct.png}
 
 \end{frame}
 
 \begin{frame}[fragile]{Seasonal adjustment examples (2/7)}
 \protect\hypertarget{seasonal-adjustment-examples-27}{}
+
+Like in JD+ users can defined their own specification or use a
+pre-defined one:
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x13_usr_spec <-}\StringTok{ }\KeywordTok{x13_spec_def}\NormalTok{(}\DataTypeTok{spec =} \KeywordTok{c}\NormalTok{(}\StringTok{"RSA5c"}\NormalTok{),}
+                             \DataTypeTok{usrdef.outliersEnabled =} \OtherTok{TRUE}\NormalTok{,}
+                             \DataTypeTok{usrdef.outliersType =} \KeywordTok{c}\NormalTok{(}\StringTok{"LS"}\NormalTok{, }\StringTok{"AO"}\NormalTok{),}
+                             \DataTypeTok{usrdef.outliersDate =} \KeywordTok{c}\NormalTok{(}\StringTok{"2008-10-01"}\NormalTok{,}
+                                                     \StringTok{"2002-01-01"}\NormalTok{),}
+                             \DataTypeTok{usrdef.outliersCoef =} \KeywordTok{c}\NormalTok{(}\DecValTok{36}\NormalTok{, }\DecValTok{14}\NormalTok{),}
+                             \DataTypeTok{transform.function =} \StringTok{"None"}\NormalTok{)}
+\NormalTok{x13_mod <-}\StringTok{ }\KeywordTok{x13}\NormalTok{(ipi_fr, x13_usr_spec)}
+\NormalTok{ts_mod <-}\StringTok{ }\KeywordTok{tramoseats_def}\NormalTok{(ipi_fr, }\DataTypeTok{spec =} \StringTok{"RSAfull"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]{Seasonal adjustment examples (3/7):
+decomposition}
+\protect\hypertarget{seasonal-adjustment-examples-37-decomposition}{}
 
 \footnotesize
 
@@ -382,19 +449,19 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 \begin{verbatim}
 ##  Monitoring and Quality Assessment Statistics:  
 ##       M stats
-## M(1)    0.061
-## M(2)    0.000
-## M(3)    0.960
+## M(1)    0.055
+## M(2)    0.041
+## M(3)    0.926
 ## M(4)    0.621
-## M(5)    0.725
-## M(6)    0.244
-## M(7)    0.075
-## M(8)    0.216
-## M(9)    0.055
-## M(10)   0.175
-## M(11)   0.160
-## Q       0.302
-## Q-M2    0.339
+## M(5)    0.724
+## M(6)    0.215
+## M(7)    0.074
+## M(8)    0.208
+## M(9)    0.056
+## M(10)   0.158
+## M(11)   0.146
+## Q       0.297
+## Q-M2    0.329
 ## 
 ## Final filters: 
 ## Seasonal filter:  3x5
@@ -403,8 +470,9 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \end{frame}
 
-\begin{frame}[fragile]{Seasonal adjustment examples (3/7)}
-\protect\hypertarget{seasonal-adjustment-examples-37}{}
+\begin{frame}[fragile]{Seasonal adjustment examples (4/7):
+decomposition}
+\protect\hypertarget{seasonal-adjustment-examples-47-decomposition}{}
 
 \footnotesize
 
@@ -443,8 +511,8 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \end{frame}
 
-\begin{frame}[fragile]{Seasonal adjustment examples (4/7)}
-\protect\hypertarget{seasonal-adjustment-examples-47}{}
+\begin{frame}[fragile]{Seasonal adjustment examples (5/7)}
+\protect\hypertarget{seasonal-adjustment-examples-57}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -456,8 +524,8 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \end{frame}
 
-\begin{frame}[fragile]{Seasonal adjustment examples (5/7)}
-\protect\hypertarget{seasonal-adjustment-examples-57}{}
+\begin{frame}[fragile]{Seasonal adjustment examples (6/7)}
+\protect\hypertarget{seasonal-adjustment-examples-67}{}
 
 \footnotesize
 
@@ -469,40 +537,40 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \begin{verbatim}
 ## Last observed values
-##              y       sa        t            s          i
-## Jan 2017  97.4 100.3902 100.5631  -2.99019403 -0.1729099
-## Feb 2017  97.5 100.3646 100.9790  -2.86460513 -0.6143814
-## Mar 2017 112.0 102.7607 101.4754   9.23928088  1.2852852
-## Apr 2017 103.0 100.5925 101.9417   2.40747193 -1.3491871
-## May 2017 100.4 103.1054 102.3511  -2.70539979  0.7542873
-## Jun 2017 111.2 102.5591 102.7440   8.64087923 -0.1848857
-## Jul 2017 103.4 103.3144 103.1308   0.08560672  0.1835989
-## Aug 2017  79.3 103.0602 103.5499 -23.76018864 -0.4897563
-## Sep 2017 109.7 103.6331 104.0215   6.06692870 -0.3884680
-## Oct 2017 114.0 106.7526 104.5113   7.24741395  2.2412439
-## Nov 2017 107.7 105.5963 104.9317   2.10371268  0.6645400
-## Dec 2017 101.4 104.8511 105.2567  -3.45110589 -0.4056223
+##              y       sa        t           s             i
+## Jan 2017  97.4 100.6172 100.6174  -3.2172329 -0.0001992082
+## Feb 2017  97.5 100.3127 101.0283  -2.8126932 -0.7155966863
+## Mar 2017 112.0 102.5469 101.4894   9.4530696  1.0575376567
+## Apr 2017 103.0 101.0897 101.9282   1.9103111 -0.8385432983
+## May 2017 100.4 103.0319 102.3136  -2.6318733  0.7182480125
+## Jun 2017 111.2 102.4926 102.6921   8.7074293 -0.1994894034
+## Jul 2017 103.4 103.1596 103.0816   0.2404277  0.0779236963
+## Aug 2017  79.3 103.2483 103.5055 -23.9483256 -0.2572170473
+## Sep 2017 109.7 103.5536 103.9555   6.1464361 -0.4019376040
+## Oct 2017 114.0 106.6886 104.3955   7.3113786  2.2931579296
+## Nov 2017 107.7 105.4631 104.7505   2.2369236  0.7125546908
+## Dec 2017 101.4 104.7490 105.0214  -3.3490189 -0.2723590878
 ## 
 ## Forecasts:
-##                y_f     sa_f      t_f          s_f         i_f
-## Jan 2018 102.70258 105.5740 105.4465  -2.87143758  0.12749286
-## Feb 2018 102.57727 105.5466 105.5700  -2.96928512 -0.02343246
-## Mar 2018 114.89223 105.6137 105.6941   9.27854825 -0.08039957
-## Apr 2018 108.05979 105.6858 105.8691   2.37398629 -0.18326092
-## May 2018 103.52705 106.1896 106.1079  -2.66254960  0.08166967
-## Jun 2018 114.95898 106.4105 106.3950   8.54848111  0.01546868
-## Jul 2018 106.88433 106.8972 106.7095  -0.01284092  0.18770246
-## Aug 2018  83.08057 106.7894 107.0363 -23.70886535 -0.24683743
-## Sep 2018 113.11472 107.1129 107.3373   6.00186538 -0.22443520
-## Oct 2018 115.40625 108.0945 107.6052   7.31175802  0.48929718
-## Nov 2018 110.15450 107.9110 107.8287   2.24351857  0.08232608
-## Dec 2018 104.27550 107.8042 107.9985  -3.52874570 -0.19421806
+##                y_f     sa_f      t_f         s_f          i_f
+## Jan 2018 101.96630 105.0963 105.1795  -3.1299775 -0.083200162
+## Feb 2018 102.23632 105.1464 105.2838  -2.9100563 -0.137428535
+## Mar 2018 113.85794 105.5026 105.3966   8.3553336  0.105971540
+## Apr 2018 108.47477 105.4896 105.5573   2.9851827 -0.067754048
+## May 2018 103.22164 105.7963 105.7844  -2.5746309  0.011859024
+## Jun 2018 114.64042 106.0073 106.0629   8.6331483 -0.055612674
+## Jul 2018 106.53519 106.3942 106.3666   0.1410119  0.027594337
+## Aug 2018  82.77073 106.6890 106.6849 -23.9182264  0.004061745
+## Sep 2018 112.79551 106.7018 106.9859   6.0936895 -0.284129714
+## Oct 2018 115.13202 107.7516 107.2471   7.3803800  0.504589345
+## Nov 2018 109.87965 107.5136 107.4572   2.3660966  0.056314698
+## Dec 2018 103.97193 107.3744 107.6093  -3.4024325 -0.234923742
 \end{verbatim}
 
 \end{frame}
 
-\begin{frame}[fragile]{Seasonal adjustment examples (6/7)}
-\protect\hypertarget{seasonal-adjustment-examples-67}{}
+\begin{frame}[fragile]{Seasonal adjustment examples (7/7)}
+\protect\hypertarget{seasonal-adjustment-examples-77}{}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -514,8 +582,8 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \end{frame}
 
-\begin{frame}[fragile]{Seasonal adjustment examples (7/7)}
-\protect\hypertarget{seasonal-adjustment-examples-77}{}
+\begin{frame}[fragile]{Seasonal adjustment examples (8/7)}
+\protect\hypertarget{seasonal-adjustment-examples-87}{}
 
 \footnotesize
 
@@ -531,19 +599,19 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 ##  after the removal of the long term trend 
 ##  Trend computed by Hodrick-Prescott filter (cycle length = 8.0 years)
 ##            Component
-##  Cycle         1.656
-##  Seasonal     39.710
-##  Irregular     0.369
-##  TD & Hol.     0.000
-##  Others       61.757
-##  Total       103.492
+##  Cycle         1.557
+##  Seasonal     39.219
+##  Irregular     0.362
+##  TD & Hol.     0.018
+##  Others       61.971
+##  Total       103.128
 ## 
 ##  Combined test in the entire series 
 ##  Non parametric tests for stable seasonality
 ##                                                           P.value
 ##    Kruskall-Wallis test                                      0.000
 ##    Test for the presence of seasonality assuming stability   0.000
-##    Evolutive seasonality test                                0.024
+##    Evolutive seasonality test                                0.032
 ##  
 ##  Identifiable seasonality present
 ## 
@@ -551,10 +619,10 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 ##                                       P.value
 ##  qs test on sa                          1.000
 ##  qs test on i                           1.000
-##  f-test on sa (seasonal dummies)        0.985
-##  f-test on i (seasonal dummies)         0.917
-##  Residual seasonality (entire series)   0.991
-##  Residual seasonality (last 3 years)    0.971
+##  f-test on sa (seasonal dummies)        0.997
+##  f-test on i (seasonal dummies)         0.965
+##  Residual seasonality (entire series)   0.993
+##  Residual seasonality (last 3 years)    0.922
 ##  f-test on sa (td)                      0.001
 ##  f-test on i (td)                       0.006
 \end{verbatim}
@@ -722,15 +790,8 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
 
 \end{frame}
 
-\begin{frame}{Import a workspace (2/3)}
+\begin{frame}[fragile]{Import a workspace (2/3)}
 \protect\hypertarget{import-a-workspace-23}{}
-
-\animategraphics[loop, autoplay, width=\linewidth]{7}{img/gif/import_model/}{1}{97}
-
-\end{frame}
-
-\begin{frame}[fragile]{Import a workspace (3/3)}
-\protect\hypertarget{import-a-workspace-33}{}
 
 \footnotesize
 
@@ -791,6 +852,13 @@ A \texttt{SA} object is a \texttt{list()} of 5 elements:
   |                                                                       
   |=================================================================| 100%
 \end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Import a workspace (2/3)}
+\protect\hypertarget{import-a-workspace-23-1}{}
+
+\animategraphics[loop, autoplay, width=\linewidth]{3}{img/gif/import_model/}{1}{97}
 
 \end{frame}
 
@@ -866,84 +934,68 @@ Package:
 
 \end{frame}
 
-\begin{frame}[fragile]{Why and how use RJDemetra?}
-\protect\hypertarget{why-and-how-use-rjdemetra}{}
+\hypertarget{how-to-use-jdemetra-to-improve-production-of-sa-series}{%
+\section{How to use JDemetra+ to improve production of SA
+series?}\label{how-to-use-jdemetra-to-improve-production-of-sa-series}}
 
-\includegraphics[height = 1.5cm]{img/rjdqa_logo.png} A package for
-quality assessment for seasonal adjustment. It implements:
+\begin{frame}{Examples of current use of RJDemetra}
+\protect\hypertarget{examples-of-current-use-of-rjdemetra}{}
+
+\begin{itemize}
+\tightlist
+\item
+  rjdqa (experimental, no documentation): package to help quality
+  assessment (dashboard and quality report matrix)
+\end{itemize}
+
+\faGithub{} \url{https://github.com/AQLT/rjdqa}
+
+\begin{itemize}
+\tightlist
+\item
+  persephone: enable easy processing during production of SA series
+  (interactive plots, dashboards\ldots{})
+\end{itemize}
+
+\faGithub{} \url{https://github.com/statistikat/persephone}
 
 \begin{itemize}
 \item
-  Statistics Canada Dashboard (to provide a snapshot of an individual
-  series at a point in time and points out some possible problems)
+  Non explore topics: direct vs indirect adjustment (persephone),
+  analyse of revisions, etc.
 \item
-  Insee quality report matrix (used to help the analyst during
-  production to prioritize the models to check)
+  Carry out studies on SA: Ladiray D., Quartier-la-Tente A.,
+  ``(In)Stability of Reg-ARIMA Models for Seasonal Adjustment''
+  \(\rightarrow\) STS05 in room MANS
 \end{itemize}
 
-\(\rightarrow\) See the
-\href{https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001?inheritRedirect=true}{Seasonal
-Adjustment handbook}
-
-Available on github \url{https://github.com/AQLT/rjdqa}, still in
-development (only works for X13 models and no documentation yet)
-
-Example of the dashboard:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(rjdqa)}
-\KeywordTok{plot}\NormalTok{(}\KeywordTok{sa_dashboard}\NormalTok{(x13_mod))}
-\end{Highlighting}
-\end{Shaded}
-
 \end{frame}
 
-\hypertarget{statistics-canada-dashboard}{%
-\subsection{Statistics Canada
-dashboard}\label{statistics-canada-dashboard}}
+\begin{frame}{Thank you for your attention}
+\protect\hypertarget{thank-you-for-your-attention}{}
 
-\begin{frame}[fragile]{Example of the dashboard (1/2)}
-\protect\hypertarget{example-of-the-dashboard-12}{}
+\vspace{-0.2cm}
 
-\footnotesize
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{center}
+\includegraphics[width=4cm]{img/rjdemetra_logo.png}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth} 
+\href{https://github.com/jdemetra/rjdemetra}{\faGithub{} jdemetra/rjdemetra}  
 
-\begin{verbatim}
-## 
-## Attaching package: 'rjdqa'
-\end{verbatim}
+\href{https://twitter.com/JDemetraPlus}{\faTwitter{} @JdemetraPlus}
+\end{column}
+\end{columns}
 
-\begin{verbatim}
-## The following object is masked _by_ '.GlobalEnv':
-## 
-##     myseries
-\end{verbatim}
+\vfill
 
-\includegraphics{img/markdown-unnamed-chunk-19-1.pdf}
-
-\end{frame}
-
-\begin{frame}{Example of the dashboard (2/2)}
-\protect\hypertarget{example-of-the-dashboard-22}{}
-
-\begin{enumerate}
-\item
-  \textbf{Recent History of Series}: plot of the raw series, the SA
-  series and the trend for the most recent periods. It is intended to
-  identify trend direction, overall volatility and obvious outliers
-\item
-  \textbf{Summary of Key Diagnostics}: key diagnostics as residual
-  seasonality, recent and recurring outliers, moving seasonality, ARIMA
-  model autocorrelation
-\item
-  \textbf{Estimated Patterns and Anticipated Movements}: estimated
-  trading day, moving holiday and seasonal pattern (rescaled in additive
-  decomposition to represent relative level)
-\item
-  \textbf{Net Effect of Seasonal Adjustment}: movement in the raw
-  series, compared to typical ranges centered around ``neutral'' value
-  (when \(SA_t = SA_{t-1}\))
-\end{enumerate}
+Contact:\\
+Alain Quartier-la-Tente\\
+\href{mailto:alain.quartier-la-tente@insee.fr}{\faEnvelope{} alain.quartier-la-tente@insee.fr}\\
+\href{https://twitter.com/AQLT}{\faTwitter{} @AQLT}\\
+\href{https://github.com/AQLT}{\faGithub{} AQLT}
 
 \end{frame}
 
