@@ -2,9 +2,9 @@
 \beamer@sectionintoc {1}{Introduction to seasonal adjustment}{2}{0}{1}
 \beamer@sectionintoc {2}{RJDemetra}{9}{0}{2}
 \beamer@subsectionintoc {2}{1}{Current status}{10}{0}{2}
-\beamer@subsectionintoc {2}{2}{Some examples}{11}{0}{2}
+\beamer@subsectionintoc {2}{2}{RegARIMA examples}{11}{0}{2}
 \beamer@subsectionintoc {2}{3}{Seasonal adjustment examples}{14}{0}{2}
 \beamer@subsectionintoc {2}{4}{Manipulate workspaces}{22}{0}{2}
-\beamer@subsectionintoc {2}{5}{Installation and future development}{26}{0}{2}
+\beamer@subsectionintoc {2}{5}{How to install the package?}{26}{0}{2}
 \beamer@subsectionintoc {2}{6}{Future developments}{27}{0}{2}
 \beamer@sectionintoc {3}{How to use JDemetra+ to improve production of SA series?}{29}{0}{3}

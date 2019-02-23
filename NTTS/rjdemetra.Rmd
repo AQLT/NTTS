@@ -84,7 +84,7 @@ $\rightarrow$ proceed in two steps
 ### What's JDemetra+ ? 
 
 
-\includegraphics[width=2cm]{img/jdemetra+.jpg} TRAMO/SEATS+ and X-13ARIMA-SEATS are implemented in JDemetra+
+\includegraphics[width=2cm]{img/jdemetra+.jpg} TRAMO/SEATS+ and X-13ARIMA-SEATS are implemented in JDemetra+ (JD+)
 
 
 \bigskip
@@ -104,17 +104,15 @@ $\rightarrow$ RJDemetra is an \large\faRProject{} \normalsize interface to JDeme
     + S3 classes with plot, summary, print methods
    
 - Manipulate JD+ workspaces:  
-    + Import JD+ workspace to get: input raw series or SA model
+    + Import JD+ workspace to get input raw series or SA model
     + Export R models created via RJDemetra
     
 - Include a dataset: industrial production indices in manufacturing in the European Union
 
 
-## Some examples
-
+## RegARIMA examples
 
 ### RegARIMA examples (1/3)
-\footnotesize
 
 ```{r}
 library(RJDemetra)
@@ -143,13 +141,13 @@ layout(matrix(1:6, 3, 2));plot(regarima_model, ask = FALSE)
 
 
 ## Seasonal adjustment examples
-### Seasonal adjustment examples (1/7)
+### Seasonal adjustment examples (1/8)
 
 A `SA` object is a `list()` of 5 elements:
 
 \includegraphics{img/sa_obj_struct.png}
 
-### Seasonal adjustment examples (2/7)
+### Seasonal adjustment examples (2/8)
 
 Like in JD+ users can defined their own specification or use a pre-defined one:
 
@@ -167,7 +165,7 @@ ts_mod <- tramoseats_def(ipi_fr, spec = "RSAfull")
 ```
 
 
-### Seasonal adjustment examples (3/7): decomposition
+### Seasonal adjustment examples (3/8): decomposition
 
 \footnotesize
 
@@ -175,7 +173,7 @@ ts_mod <- tramoseats_def(ipi_fr, spec = "RSAfull")
 x13_mod$decomposition
 ```
 
-### Seasonal adjustment examples (4/7): decomposition
+### Seasonal adjustment examples (4/8): decomposition
 
 \footnotesize
 
@@ -184,13 +182,13 @@ ts_mod$decomposition
 ```
 
 
-### Seasonal adjustment examples (5/7)
+### Seasonal adjustment examples (5/8)
 
 ```{r, fig.height=6}
 plot(x13_mod$decomposition)
 ```
 
-### Seasonal adjustment examples (6/7)
+### Seasonal adjustment examples (6/8)
 
 \footnotesize
 
@@ -198,14 +196,14 @@ plot(x13_mod$decomposition)
 x13_mod$final
 ```
 
-### Seasonal adjustment examples (7/7)
+### Seasonal adjustment examples (7/8)
 
 ```{r,fig.height=6}
 plot(x13_mod$final, first_date = 2012, type_chart = "sa-trend")
 ```
 
 
-### Seasonal adjustment examples (8/7)
+### Seasonal adjustment examples (8/8)
 
 \footnotesize
 ```{r,fig.height=6}
@@ -261,11 +259,11 @@ mod <- get_model(wk, sa2)
 \animategraphics[loop, autoplay, width=\linewidth]{3}{img/gif/import_model/}{1}{97}
 
 
-## Installation and future development
+## How to install the package?
 
 ### How to install the package?
 
-The package is available on GitHub: https://github.com/jdemetra/rjdemetra
+The package is available on \large\faGithub\normalsize: https://github.com/jdemetra/rjdemetra
 
 It has also it's own website: https://jdemetra.github.io/rjdemetra/
 

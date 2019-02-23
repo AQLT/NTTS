@@ -23,12 +23,12 @@
 \headcommand {\slideentry {2}{1}{1}{10/10}{Current status}{0}}
 \headcommand {\beamer@framepages {10}{10}}
 \headcommand {\beamer@subsectionpages {10}{10}}
-\headcommand {\beamer@subsectionentry {0}{2}{2}{11}{Some examples}}
-\headcommand {\slideentry {2}{2}{1}{11/11}{Some examples}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{11}{RegARIMA examples}}
+\headcommand {\slideentry {2}{2}{1}{11/11}{RegARIMA examples}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\slideentry {2}{2}{2}{12/12}{Some examples}{0}}
+\headcommand {\slideentry {2}{2}{2}{12/12}{RegARIMA examples}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\slideentry {2}{2}{3}{13/13}{Some examples}{0}}
+\headcommand {\slideentry {2}{2}{3}{13/13}{RegARIMA examples}{0}}
 \headcommand {\beamer@framepages {13}{13}}
 \headcommand {\beamer@subsectionpages {11}{13}}
 \headcommand {\beamer@subsectionentry {0}{2}{3}{14}{Seasonal adjustment examples}}
@@ -59,8 +59,8 @@
 \headcommand {\slideentry {2}{4}{4}{25/25}{Manipulate workspaces}{0}}
 \headcommand {\beamer@framepages {25}{25}}
 \headcommand {\beamer@subsectionpages {22}{25}}
-\headcommand {\beamer@subsectionentry {0}{2}{5}{26}{Installation and future development}}
-\headcommand {\slideentry {2}{5}{1}{26/26}{Installation and future development}{0}}
+\headcommand {\beamer@subsectionentry {0}{2}{5}{26}{How to install the package?}}
+\headcommand {\slideentry {2}{5}{1}{26/26}{How to install the package?}{0}}
 \headcommand {\beamer@framepages {26}{26}}
 \headcommand {\beamer@subsectionpages {26}{26}}
 \headcommand {\beamer@subsectionentry {0}{2}{6}{27}{Future developments}}
