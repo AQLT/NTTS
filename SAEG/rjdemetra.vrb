@@ -1,30 +1,28 @@
-\frametitle{What for?}
+\frametitle{How to install the package?}
+\protect\hypertarget{how-to-install-the-package-1}{}
 
-\includegraphics[height = 1.5cm]{img/rjdqa_logo.png} A package for
-quality assessment for seasonal adjustment. It implements:
+The package is available on \large\faGithub\normalsize:
+\url{https://github.com/jdemetra/rjdemetra}
 
-\begin{itemize}
-\item
-  Statistics Canada Dashboard (to provide a snapshot of an individual
-  series at a point in time and points out some possible problems)
-\item
-  Insee quality report matrix (used to help the analyst during
-  production to prioritize the models to check)
-\end{itemize}
+It has also it's own website:
+\url{https://jdemetra.github.io/rjdemetra/}
 
-\(\rightarrow\) See the
-\href{https://ec.europa.eu/eurostat/web/products-manuals-and-guidelines/-/KS-GQ-18-001?inheritRedirect=true}{Seasonal
-Adjustment handbook}
-
-Available on github \url{https://github.com/AQLT/rjdqa}, still in
-development (only works for X13 models and no documentation yet)
-
-Example of the dashboard:
+It package can be installed from CRAN:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{library}\NormalTok{(rjdqa)}
-\KeywordTok{plot}\NormalTok{(}\KeywordTok{sa_dashboard}\NormalTok{(x13_mod))}
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"RJDemetra"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+Or from github (development version):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"jdemetra/rjdemetra"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\bcinfo To install it you need Java8: in case you don't, install a
+portable version of Java8 and set the \texttt{JAVA\_HOME} path.
 

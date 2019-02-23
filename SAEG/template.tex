@@ -372,7 +372,13 @@ $endif$
 \begin{document}
 $if(title)$
 $if(beamer)$
-\frame[plain,noframenumbering]{\titlepage}
+\begin{frame}[plain,noframenumbering]
+\titlepage
+$if(backgroundimage)$
+\tikz[remember picture,overlay] \node[opacity=0.3,inner sep=0pt] at (current page.center){\includegraphics[width=\paperwidth,height=\paperheight]{$backgroundimage$}};
+\clearpage
+$endif$
+\end{frame}
 $else$
 \maketitle
 $endif$
