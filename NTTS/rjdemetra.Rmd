@@ -102,11 +102,15 @@ $\rightarrow$ RJDemetra is an \large\faRProject{} \normalsize interface to JDeme
 - RegARIMA, TRAMO-SEATS and X-13-ARIMA:  
     + pre-defined and user-defined specifications  
     + S3 classes with plot, summary, print methods
-   
+    
+\medskip
+
 - Manipulate JD+ workspaces:  
     + Import JD+ workspace to get input raw series or SA model
     + Export R models created via RJDemetra
     
+\medskip
+
 - Include a dataset: industrial production indices in manufacturing in the European Union
 
 
@@ -240,6 +244,12 @@ get_ts(wk)
 ```
 
 ### Import a workspace (2/3)
+
+\animategraphics[loop, autoplay, width=\linewidth]{2.5}{img/gif/import_model/}{1}{114}
+
+
+
+### Import a workspace (3/3)
 \footnotesize
 
 ```{r}
@@ -252,11 +262,6 @@ sa2 <- get_object(mp,2)
 get_name(sa2)
 mod <- get_model(wk, sa2)
 ```
-
-
-### Import a workspace (2/3)
-
-\animategraphics[loop, autoplay, width=\linewidth]{3}{img/gif/import_model/}{1}{97}
 
 
 ## How to install the package?
@@ -310,7 +315,7 @@ Package:
 
 \faGithub{} https://github.com/AQLT/rjdqa
 
-- persephone: enable easy processing during production of SA series (interactive plots, dashboards...)
+- persephone (experimental): enable easy processing during production of SA series (interactive plots, dashboards...)
 
 \faGithub{} https://github.com/statistikat/persephone
 
@@ -318,6 +323,17 @@ Package:
 
 
 - Carry out studies on SA: Ladiray D., Quartier-la-Tente A., "(In)Stability of Reg-ARIMA Models for Seasonal Adjustment" $\rightarrow$ STS05 in room MANS
+
+### rjdqa
+\footnotesize
+```{r,fig.height=6.5, echo = TRUE}
+plot(rjdqa::sa_dashboard(x13_mod))
+```
+
+### persephone
+
+\animategraphics[loop, autoplay, width=0.9\linewidth]{3}{img/gif/persephone/}{1}{167}
+
 
 ### Thank you for your attention
 

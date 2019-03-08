@@ -282,6 +282,12 @@ adjustment of official statistics
   \item
     S3 classes with plot, summary, print methods
   \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
 \item
   Manipulate JD+ workspaces:
 
@@ -292,6 +298,12 @@ adjustment of official statistics
   \item
     Export R models created via RJDemetra
   \end{itemize}
+\end{itemize}
+
+\medskip
+
+\begin{itemize}
+\tightlist
 \item
   Include a dataset: industrial production indices in manufacturing in
   the European Union
@@ -788,8 +800,15 @@ decomposition}
 
 \end{frame}
 
-\begin{frame}[fragile]{Import a workspace (2/3)}
+\begin{frame}{Import a workspace (2/3)}
 \protect\hypertarget{import-a-workspace-23}{}
+
+\animategraphics[loop, autoplay, width=\linewidth]{2.5}{img/gif/import_model/}{1}{114}
+
+\end{frame}
+
+\begin{frame}[fragile]{Import a workspace (3/3)}
+\protect\hypertarget{import-a-workspace-33}{}
 
 \footnotesize
 
@@ -850,13 +869,6 @@ decomposition}
   |                                                                       
   |=================================================================| 100%
 \end{verbatim}
-
-\end{frame}
-
-\begin{frame}{Import a workspace (2/3)}
-\protect\hypertarget{import-a-workspace-23-1}{}
-
-\animategraphics[loop, autoplay, width=\linewidth]{3}{img/gif/import_model/}{1}{97}
 
 \end{frame}
 
@@ -951,8 +963,8 @@ series?}\label{how-to-use-jdemetra-to-improve-production-of-sa-series}}
 \begin{itemize}
 \tightlist
 \item
-  persephone: enable easy processing during production of SA series
-  (interactive plots, dashboards\ldots{})
+  persephone (experimental): enable easy processing during production of
+  SA series (interactive plots, dashboards\ldots{})
 \end{itemize}
 
 \faGithub{} \url{https://github.com/statistikat/persephone}
@@ -966,6 +978,28 @@ series?}\label{how-to-use-jdemetra-to-improve-production-of-sa-series}}
   ``(In)Stability of Reg-ARIMA Models for Seasonal Adjustment''
   \(\rightarrow\) STS05 in room MANS
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{rjdqa}
+\protect\hypertarget{rjdqa}{}
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{plot}\NormalTok{(rjdqa}\OperatorTok{::}\KeywordTok{sa_dashboard}\NormalTok{(x13_mod))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{img/markdown-unnamed-chunk-18-1.pdf}
+
+\end{frame}
+
+\begin{frame}{persephone}
+\protect\hypertarget{persephone}{}
+
+\animategraphics[loop, autoplay, width=0.9\linewidth]{3}{img/gif/persephone/}{1}{167}
 
 \end{frame}
 
