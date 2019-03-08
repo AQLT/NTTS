@@ -1,8 +1,8 @@
 ---
 title: "RJDemetra: an R interface to JDemetra+"
 subtitle: "SAEG & SACE, 11 March 2019"
-author: "Alain Quartier-la-Tente"
-division: "Insee, Seasonal Adjustment Centre of Excellence"
+author: "Alain Quartier-la-Tente and Anna Michalek"
+division: "Insee, Seasonal Adjustment Centre of Excellence (AQLT) and European Central Bank (AM)"
 departement: "alain.quartier-la-tente@insee.fr"
 logo: "img/SACElogo.jpg"
 output:
