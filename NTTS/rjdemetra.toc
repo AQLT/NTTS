@@ -7,4 +7,4 @@
 \beamer@subsectionintoc {2}{4}{Manipulate workspaces}{22}{0}{2}
 \beamer@subsectionintoc {2}{5}{How to install the package?}{26}{0}{2}
 \beamer@subsectionintoc {2}{6}{Future developments}{27}{0}{2}
-\beamer@sectionintoc {3}{How to use JDemetra+ to improve production of SA series?}{29}{0}{3}
+\beamer@sectionintoc {3}{How to use RJDemetra to improve production of SA series?}{29}{0}{3}

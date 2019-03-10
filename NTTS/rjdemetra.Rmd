@@ -307,7 +307,7 @@ Package:
 
 - Function to "refresh" the model (JD+ 3.0.0)
 
-# How to use JDemetra+ to improve production of SA series?
+# How to use RJDemetra to improve production of SA series?
 
 ### Examples of current use of RJDemetra
 
