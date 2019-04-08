@@ -1,0 +1,695 @@
+---
+title: "De la conception d'un package à RJDemetra et au-delà"
+subtitle: "Séminaire interne DMS, 4 avril 2019"
+author: "Alain Quartier-la-Tente et Anna Michalek"
+division: "Insee, Seasonal Adjustment Centre of Excellence (AQLT) and European Central Bank (AM)"
+departement: "alain.quartier-la-tente@insee.fr"
+logo: "img/SACElogo.jpg"
+output:
+    beamer_presentation:
+        template: template.tex
+        keep_tex: yes
+        theme: TorinoTh
+        slide_level: 3
+header-includes:
+- \usepackage{wrapfig}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{animate}
+- \usepackage{fontawesome5}
+themeoptions: "coding=utf8,language=english"
+classoption: 'usepdftitle=false,french'
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                        fig.path = "img/markdown-",
+                      warning = FALSE)
+library(AQLTools)
+library(RJDemetra)
+options(enable_print_style = FALSE)
+```
+
+# Introduction
+
+### RJDemetra et JDemetra+ \bcquestion
+
+\includegraphics[width=2cm]{img/jdemetra+.png} JDemetra+ (JD+) : logiciel de désaisonnalisation, [officiellement recommandé](https://ec.europa.eu/eurostat/cros/system/files/Jdemetra_%20release.pdf) par Eurostat et la BCE, où sont implémentés TRAMO/SEATS+ et X-13ARIMA-SEATS
+
+\bigskip
+$\rightarrow$ RJDemetra est une interface \large\faRProject{} \normalsize à JDemetra+ basée sur les librairies \large\faJava{} \normalsize de JD+
+
+\pause
+
+Objectif :  avoir un package complet autour de JD+ dans un langage de script (ici \faRProject) accessible à tous pour :
+
+- tester sans développer une interface graphique 
+
+- utiliser ce qui est déjà disponible en R
+
+- faire des nouveaux développements (dashboards, direct vs indirect)
+
+# Création d'un package Java
+
+## Création d'un package
+
+### 6 idées reçues sur la création d'un package
+
+1. Réaliser un package est un truc d'initié
+
+2. Un package est à destination du CRAN
+
+3. Un package sert à partager son code avec d'autres personnes
+
+4. Je n'ai que très peu de
+fonctions, inutile d'en faire un package
+
+5. Cela prend du temps
+
+$\rightarrow$ Beaucoup de documentation en ligne en \bcdfrance
+
+Exemple : "Fabriquer un package R en moins de 6 minutes" https://r2018-rennes.sciencesconf.org/205552
+
+$\rightarrow$ Pour aller plus loin : "R packages" http://r-pkgs.had.co.nz/
+
+$\rightarrow$ utilisation de RStudio
+
+### Faire son premier package (1/5)
+
+\includegraphics{img/package/new_project00.png}
+
+### Faire son premier package (2/5)
+
+\includegraphics{img/package/new_project01.png}
+
+### Faire son premier package (3/5)
+
+Plusieurs dossiers sont créés :
+
+\includegraphics[width = 0.2\textwidth]{img/package/new_project03.png}
+
+Les plus importants :
+
+- dossier R : programmes R
+- DESCRIPTION : description du package
+- NAMESPACE et man : seront générés automatiquement 
+
+### Faire son premier package (4/5)
+
+Exemple du DESCRIPTION
+
+\includegraphics{img/package/new_project04.png}
+
+### Faire son premier package (5/5)
+
+Programme par défaut :
+
+\includegraphics{img/package/new_project02.png}
+
+ - Check : vérifier s'il n'y a pas d'erreur d'exécution ou de codage 'Ctrl + Shift + E'
+ 
+- Build and Reload : installer le package 
+
+
+
+### Documentation avec roxygen2 (1/3)
+
+\includegraphics{img/package/fonction01.png}
+
+### Documentation avec roxygen2 (2/3)
+
+\includegraphics[width=0.9\textwidth]{img/package/fonction02.png}
+
+### Documentation avec roxygen2 (3/3)
+
+\includegraphics[width=0.9\textwidth]{img/package/fonction03.png}
+
+
+## Lien avec Java
+
+### rJava
+
+Dans une session R :
+```{r, eval=FALSE}
+library("rJava")
+.jinit()
+.jaddClassPath("./inst/java/demetra-tstoolkit-2.2.2.jar")
+.jaddClassPath("./inst/java/jdr-2.2.2.jar")
+```
+
+\pause
+Dans un package : librairies \faJava{} sous `/inst/java`
+
+```{r, eval=FALSE}
+.onLoad <- function(libname, pkgname){
+  .jpackage(pkgname, lib.loc = libname)
+}
+```
+
+\pause
+Deux fonctions à retenir :
+
+1. `.jcall()` : appeler une méthode
+
+2. `.jnew()` : créer un nouveau objet Java
+
+
+### Un exemple
+
+```{r}
+library(rJava)
+library(RJDemetra)
+jrspec <- .jcall("jdr/spec/tramoseats/TramoSeatsSpec",
+                 "Ljdr/spec/tramoseats/TramoSeatsSpec;",
+                 "of", "RSA0")
+jspec <- .jcall(jrspec,
+                "Lec/satoolkit/tramoseats/TramoSeatsSpecification;",
+                "getCore")# ou : jspec <- jrspec$getCore()
+jdictionary <- .jnew("jdr/spec/ts/Utility$Dictionary")
+jrslt <- .jcall("ec/tstoolkit/jdr/sa/Processor",
+                "Lec/tstoolkit/jdr/sa/TramoSeatsResults;",
+                "tramoseats",
+                RJDemetra:::ts_r2jd(ipi_c_eu[,"FR"]),
+                jspec, jdictionary)
+jrslt
+```
+
+
+## Tests et diffusion
+
+### Tester son package
+
+- R CMD CHECK : tests sur sa machine
+
+\pause
+- `rhub` pour lancer R CMD CHECK sur différentes plateformes (debian, linux, macos...) : `rhub::check_for_cran()`  
+\faGithub{} https://r-hub.github.io/rhub/index.html
+
+\pause
+- Intégration continue avec GitHub $\rightarrow$ Ex avec TRAVIS CI, il suffit de créer un fichier `.travis.yml` dans son package et de configurer GitHub
+
+\includegraphics{img/package/travis.png}
+
+### Site web automatique
+
+`pkgdown` permet de générer un site web, à partir de la documentation, qui peut être hébergé sur GitHub :
+
+- Plus lisible
+
+- Accessible sans avoir à ouvrir R
+
+- Résultats des exemples
+
+```{r, eval = FALSE}
+pkgdown::build_site()
+```
+
+Exemple :
+
+https://jdemetra.github.io/rjdemetra/
+
+
+### Diffusion d'un package
+
+Grande communité \large\faRProject{} \normalsize sur Twitter  
+$\rightarrow$ \href{https://twitter.com/JDemetraPlus}{\faTwitter{} @JdemetraPlus}  
+$\rightarrow$ rôle de l'Insee ?
+
+De nombreuses conférences autour de R en France et en Europe : RLadies, RAddicts, RUSS, satRdays, useR!, Rencontres R, eRum, uRos...
+
+Impression de "goodies" :
+
+\includegraphics[width=3cm]{img/rjdemetra_logo.png} \includegraphics[width=3cm]{img/jdemetra+.png} 
+
+# RJDemetra
+
+
+### Les deux étapes de la désaisonnalisation
+
+\vspace{-0.15cm}
+
+1. Pre-ajustement de certains effets déterministes par un modèle RegARIMA
+
+2. Décomposition: pour extraire la composante saisonnière
+
+\centering
+\includegraphics[height=0.75\textheight]{img/sa_2_steps.png}
+
+
+## Current status
+
+### Current status
+
+- RegARIMA, TRAMO-SEATS et X-13-ARIMA :  
+    + spécifications prédéfinies et personnalisées 
+    + classes S3 avec des méthodes plot, summary, print
+    
+\medskip
+   
+- Manipulation de workspaces JD+ :  
+    + Import de workspaces to avec le modèle CVS
+    + Export des modèles R créé par RJDemetra
+    
+\medskip
+
+- Contient une base de données : les IPI dans l'industrie manufacturière dans l'UE
+
+
+## RegARIMA : exemples
+
+### RegARIMA : exemples (1/4)
+
+```{r}
+library(RJDemetra)
+ipi_fr <- ipi_c_eu[,"FR"]
+regarima_model <- regarima_def_x13(ipi_fr, spec = "RG4c")
+regarima_model
+```
+
+### RegARIMA : exemples (2/4)
+\footnotesize
+
+```{r}
+summary(regarima_model)
+```
+
+### RegARIMA : exemples (3/4)
+
+```{r, echo = FALSE}
+def.par <- par(no.readonly = TRUE)
+par(mai = c(0,0.82,0,0.42))
+```
+
+```{r, fig.height = 6 }
+layout(matrix(1:6, 3, 2));plot(regarima_model, ask = FALSE)
+```
+
+### RegARIMA : exemples (4/4)
+
+```{r, echo = FALSE}
+def.par <- par(no.readonly = TRUE)
+par(mai = c(0,0.82,0,0.42))
+```
+
+```{r, fig.height = 6 }
+plot(regarima_model, which = 7)
+```
+
+## CVS-CJO : exemples
+### CVS-CJO : exemples (1/8)
+
+Un object `SA` est une `list()` de 5 éléments:
+
+\includegraphics{img/sa_obj_struct.png}
+
+### CVS-CJO : exemples (2/8)
+
+Possibilité de définir ses propres spécifications comme sous JD+ ou d'utiliser les spécifications prédéfinies:
+
+\footnotesize
+```{r}
+x13_usr_spec <- x13_spec_def(spec = c("RSA5c"),
+                             usrdef.outliersEnabled = TRUE,
+                             usrdef.outliersType = c("LS", "AO"),
+                             usrdef.outliersDate = c("2008-10-01",
+                                                     "2002-01-01"),
+                             usrdef.outliersCoef = c(36, 14),
+                             transform.function = "None")
+x13_mod <- x13(ipi_fr, x13_usr_spec)
+ts_mod <- tramoseats_def(ipi_fr, spec = "RSAfull")
+```
+
+
+### CVS-CJO : exemples (3/8): decomposition
+
+\footnotesize
+
+```{r}
+x13_mod$decomposition
+```
+
+### CVS-CJO : exemples (4/8): decomposition
+
+\footnotesize
+
+```{r}
+ts_mod$decomposition
+```
+
+
+### CVS-CJO : exemples (5/8)
+
+```{r, fig.height=6}
+plot(x13_mod$decomposition)
+```
+
+### CVS-CJO : exemples (6/8)
+
+\footnotesize
+
+```{r}
+x13_mod$final
+```
+
+### CVS-CJO : exemples (7/8)
+
+```{r,fig.height=6}
+plot(x13_mod$final, first_date = 2012, type_chart = "sa-trend")
+```
+
+
+### CVS-CJO : exemples (8/8)
+
+\footnotesize
+```{r,fig.height=6}
+x13_mod$diagnostics
+```
+
+
+
+## Manipuler des workspaces
+
+
+### Exporter un workspace
+
+\footnotesize
+```{r, echo= TRUE, message = FALSE}
+wk <- new_workspace()
+new_multiprocessing(wk, name = "MP-1")
+add_sa_item(wk, multiprocessing = "MP-1",
+            sa_obj = x13_mod, name =  "SA with X13 model 1 ")
+add_sa_item(wk, multiprocessing =  "MP-1",
+            sa_obj = ts_mod, name = "SA with TramoSeats model 1")
+save_workspace(wk, "workspace.xml")
+```
+
+\includegraphics{img/workspace.png}
+
+### Importer un workspace (1/3)
+
+\footnotesize
+
+```{r}
+wk <- load_workspace("workspace.xml")
+get_ts(wk)
+```
+
+### Importer un workspace (2/3)
+
+\animategraphics[loop, autoplay, width=\linewidth]{2.5}{img/gif/import_model/}{1}{114}
+
+
+
+### Importer un workspace (3/3)
+\footnotesize
+
+```{r}
+compute(wk) # Important to get the Sa model
+models <- get_model(wk) # A progress bar is printed by default
+# To extract only one model
+mp <- get_object(wk, 1)
+count(mp)
+sa2 <- get_object(mp,2)
+get_name(sa2)
+mod <- get_model(wk, sa2)
+```
+
+
+## Comment installer le package ?
+
+### Comment installer le package ?
+
+Package disponible sur \large\faGithub\normalsize: https://github.com/jdemetra/rjdemetra
+
+Il a sa propre page web : https://jdemetra.github.io/rjdemetra/
+
+Peut être installé depuis le CRAN:
+```{r, eval = FALSE}
+install.packages("RJDemetra")
+```
+
+Ou depuis github (version de développement):
+
+```{r, eval = FALSE}
+devtools::install_github("jdemetra/rjdemetra")
+```
+
+\bcinfo Il faut Java8 : à l'Insee, il faut utiliser une version portable de Java et configurer le `JAVA_HOME`. Sous AUS :
+
+```{r, eval = FALSE}
+Sys.setenv(JAVA_HOME='Y:\Logiciels\J8Px64\Java64')
+```
+
+
+## Développements futurs
+
+### What's next? \bcpanchant (1/2)
+
+Documentation:
+
+- Vignette/article pour Journal of Statistical Software
+
+- Guide pour installer le package avec une version portable de Java
+
+- Cheat sheet
+
+### What's next? \bcpanchant (2/2)
+
+Package:
+
+- Récupérer uniquement l'objet Java Java de la CVS-CJO (pour réduire le temps de calcul/personnaliser l'output) $\rightarrow$ dans la version GitHub : `jx13`, `jregarima`...
+
+- Possibilité d'utiliser des régresseurs de calendrier personnalisés user-defined calendar regressors $\rightarrow$ dans la version GitHub
+
+- Possibilité de "rafraîchir" le modèle (JD+ 3.0.0)
+
+### Performance
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE, fig.height = 6}
+library(microbenchmark)
+library(ggplot2)
+autoplot(readRDS("microbenchmark.RDS")) + theme(text = element_text(size=20))
+```
+
+# Utilisation de RJDemetra pour améliorer la production
+
+## Autour de RJDemetra
+
+### Exemples d'utilisation de RJDemetra
+
+- rjdqa (expérimental, sans documentation) : package pour aider à évaluer la qualité de la désaisonnalisation (tableau de bord et bilan qualité)
+
+\faGithub{} https://github.com/AQLT/rjdqa
+
+- persephone (expérimental) : faciliter la production de séries CVS-CJO au sein de l'institut (graphiques interactifs, tableaux de bord...)
+
+\faGithub{} https://github.com/statistikat/persephone
+
+- ggdemetra (très expérimental) : intégrer la désaisonnalisation à ggplot2
+
+\faGithub{} https://github.com/AQLT/ggdemetra
+
+- Sujets non explorés : comparaison approches directes et indirectes, analyse des révisions, etc.
+
+- Réalisations d'études : Ladiray D., Quartier-la-Tente A., "Du bon usage des modèles Reg-ARIMA en désaisonnalisation", JMS 2018
+
+### rjdqa
+\footnotesize
+```{r,fig.height=6.5, echo = TRUE}
+plot(rjdqa::sa_dashboard(x13_mod))
+```
+
+### persephone
+
+\animategraphics[loop, autoplay, width=0.9\linewidth]{3}{img/gif/persephone/}{1}{167}
+
+### ggdemetra : extension de ggplot2
+
+Exemple de création de fonction `stat_` pour `ggplot2` et effectuer de la désaisonnalisation "on the fly"
+
+https://ggplot2.tidyverse.org/articles/extending-ggplot2.html
+
+\footnotesize
+```{r, warning = FALSE,message=FALSE}
+library(ggplot2)
+library(ggdemetra)
+# IPI France
+myseries_data <- data.frame(x = as.numeric(time(ipi_c_eu)),
+                            y = as.numeric(ipi_c_eu[, "FR"]))
+
+# IPI France et Italie
+myseries_data2 <- rbind(data.frame(x = as.numeric(time(ipi_c_eu)),
+                                   y = as.numeric(ipi_c_eu[, "FR"]),
+                                   pays = "FR", stringsAsFactors = FALSE),
+                        data.frame(x = as.numeric(time(ipi_c_eu)),
+                                   y = as.numeric(ipi_c_eu[, "IT"]),
+                                   pays = "IT", stringsAsFactors = FALSE))
+p1 <- ggplot(myseries_data, aes(x, y)) + 
+  geom_line()
+```
+
+
+### ggdemetra : extension de ggplot2
+
+
+```{r, fig.height= 6}
+p1
+```
+
+
+### ggdemetra : extension de ggplot2
+
+Pour rajouter la série désaisonnalisée et la tendance :
+
+```{r, eval = TRUE}
+p2 <- ggplot(myseries_data, aes(x, y)) + 
+  geom_line() + 
+  stat_sa(colour = "red", component = "sa",
+          spec = "RSA3") +
+  stat_sa(colour = "green", component = "t",
+          spec = "RSA3")
+```
+
+Pour faire la désaisonnalisation sur plusieurs séries :
+
+```{r, eval = TRUE}
+p3 <- ggplot(myseries_data2,
+             aes(x, y, colour = pays, group = pays)) + 
+  geom_line() + 
+  stat_sa(colour = "black", component = "sa",
+          spec = "RSA0")
+```
+
+### ggdemetra : extension de ggplot2
+
+```{r, fig.height= 6}
+p2
+```
+
+### ggdemetra : extension de ggplot2
+
+```{r, fig.height= 6}
+p3
+```
+
+### ggdemetra : extension de ggplot2
+
+\footnotesize
+```{r, fig.height= 5.5}
+p2 + stat_outliers(color = "red", vjust = 4, ylim = c(NA, 80), force = 10,
+                   arrow = arrow(length = unit(0.03, "npc"),
+                                 type = "closed", ends = "last"))   +
+  geom_label_arima(x = - Inf, y = -Inf, vjust = -1, hjust = -0.1)
+```
+
+### ggdemetra : extension de ggplot2
+
+Deux fonctions à écrire : `stat_sa` et `StatSa`
+
+\footnotesize
+```{r, eval = FALSE}
+stat_sa <- function(mapping = NULL, data = NULL, geom = "line",
+                    position = "identity", show.legend = NA, 
+                    inherit.aes = TRUE,
+                    method = c("x13","tramoseats"),
+                    frequency = 12, spec = NULL
+                    component = "sa",
+                    ...) {
+    ggplot2::layer(
+        stat = StatSa, data = data, mapping = mapping, geom = geom, 
+        position = position, show.legend = show.legend,
+        inherit.aes = inherit.aes,
+        params = list(method = method, frequency = frequency,
+                      component = component,
+                      spec = spec, ...)
+    )
+}
+```
+
+### ggdemetra : extension de ggplot2
+
+\footnotesize
+```{r, eval = FALSE}
+StatSa <- ggproto("StatSa", Stat, required_aes = c("x", "y"),
+                  compute_group = function(data, scales,
+                                           method = c("x13", "tramoseats"), 
+                                           frequency = 12, spec = NULL,
+                                           component = "sa"){
+                      method <- match.arg(method)
+                      component <- match.arg(component)
+                      data_ts <- ts(data$y, start = data$x[1],
+                                    frequency = frequency)
+                      if (method == "x13") {
+                          if (is.null(spec)) {
+                              sa <- RJDemetra::jx13(data_ts)
+                          }else{
+                              sa <- RJDemetra::jx13(data_ts, spec = spec)
+                          }
+                      } else {
+                        .....
+                      }
+                      component_ts <- RJDemetra::get_indicators(sa,
+                                                                component)[[1]]
+                      data$y <- as.numeric(component_ts)
+                      data
+                  })
+```
+
+
+## Autour de JDemetra+
+### Autour de JDemetra+
+- Interface autour de JD+ 3.0:  
+\faGithub{} https://github.com/nbbrd/jd3-rtests
+
+\medskip
+
+- Modèles espace-état:  
+\faGithub{} https://github.com/palatej/rjdssf
+
+\medskip
+
+- Benchmarking et désagrégation temporelle :  
+\faGithub{} https://github.com/palatej/rjdbench
+
+\medskip
+
+- Interface autour du JWSACruncher (version anglaise de JDCruncher) :  
+\faGithub{} https://github.com/AQLT/rjwsacruncher
+
+
+### Merci de votre attention
+
+\vspace{-0.2cm}
+
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{center}
+\includegraphics[width=4cm]{img/rjdemetra_logo.png}
+\end{center}
+\end{column}
+\begin{column}{0.5\textwidth} 
+\href{https://github.com/jdemetra/rjdemetra}{\faGithub{} jdemetra/rjdemetra}  
+
+\href{https://twitter.com/JDemetraPlus}{\faTwitter{} @JdemetraPlus}
+
+Other works and packages around JD+:  
+\href{https://github.com/nbbrd}{\faGithub{} nbbrd}  
+\end{column}
+\end{columns}
+
+
+
+
